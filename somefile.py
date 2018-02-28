@@ -48,7 +48,8 @@ for line in fh:
     ERRORS.append(line)  
   else:
     file = re.search(regex, line)
-    print(file.group(4))    
+    match = file.group(4)
+    fileNames.append(match)
   totalRequests+=1
 
   
@@ -98,8 +99,8 @@ print("October Total: ", octTotal)
 print("November Total: ", novTotal)
 print("December Total: ", decTotal)
 print("Total Requests: ", totalRequests)
-print("Percentage of the requests were not successful: ", (len(errorfourtotal)/totalRequests)*100 + "%")
-print("Percentage of the requests were redirected elsewhere: ", (len(errorthreetotal)/totalRequests)*100 + "%")
+print("Percentage of the requests were not successful: ", (len(errorfourtotal)/totalRequests)*100 , "%")
+print("Percentage of the requests were redirected elsewhere: ", (len(errorthreetotal)/totalRequests)*100 , "%")
 
 for p in fileNames: 
   print (p)
