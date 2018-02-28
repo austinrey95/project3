@@ -2,6 +2,7 @@ FILE_NAME = 'http_access_log.txt'
 fh = open(FILE_NAME)
 import re
 
+print("Calculating.....")
 #counter vars
 totalRequests = 0
 janTotal = 0
@@ -16,7 +17,10 @@ sepTotal = 0
 octTotal = 0
 novTotal = 0
 decTotal = 0
-
+errorthreetotal = []
+errorfourtotal = []
+ERRORS = []
+fileNames = []
 
 #expressions
 janregex = r".* - - ([[]\d+.[J]+[a]+\S+)"
@@ -34,11 +38,26 @@ decregex = r".* - - ([[]\d+.[D]+[e]+\S+)"
 nameregex = r".* - - .*[G]+[E]+[T] (\S+)"
 errorthree = r".* - - .*[G]+[E]+[T] +\S+ +\S+ (3)"
 errorfour = r".* - - .*[G]+[E]+[T] +\S+ +\S+ (4)"
-
+fileregex = r".* - - .*[G]+[E]+[T] (\S+)"
+regex = re.compile(".*\[([^:]*):(.*) \-[0-9]{4}\] \"([A-Z]+) (.+?)( HTTP.*\"|\") ([2-5]0[0-9]) .*")
 
 #loops
 for line in fh:
+  parts = regex.split(line)
+  if not parts or len(parts) < 7:
+    ERRORS.append(line)  
+  else:
+    file = re.search(regex, line)
+    print(file.group(4))    
   totalRequests+=1
+
+  
+  #errors
+  if re.search(errorthree, line):
+    errorthreetotal.append(line) 
+  if re.search(errorfour, line):
+    errorfourtotal.append(line) 
+    
   #months
   if re.search(janregex, line):
     janTotal+=1
@@ -79,4 +98,8 @@ print("October Total: ", octTotal)
 print("November Total: ", novTotal)
 print("December Total: ", decTotal)
 print("Total Requests: ", totalRequests)
+print("Percentage of the requests were not successful: ", (len(errorfourtotal)/totalRequests)*100 + "%")
+print("Percentage of the requests were redirected elsewhere: ", (len(errorthreetotal)/totalRequests)*100 + "%")
 
+for p in fileNames: 
+  print (p)
