@@ -1,6 +1,7 @@
 FILE_NAME = 'http_access_log.txt'
 fh = open(FILE_NAME)
 import re
+import collections
 
 print("Calculating.....")
 #counter vars
@@ -50,6 +51,12 @@ for line in fh:
     file = re.search(regex, line)
     match = file.group(4)
     fileNames.append(match)
+ # if line not in fileNames:
+   # fileNames[0] == 1
+  #else:
+  #  fileNames[0] += 1    
+    
+    
   totalRequests+=1
 
   
@@ -86,6 +93,9 @@ for line in fh:
     decTotal+=1
 
 #print statements
+print("Monthly Totals")
+print("-------------------------")
+print("")
 print("January Total: ", janTotal)
 print("Febuary Total: ", febTotal)
 print("March Total: ", marchTotal)
@@ -98,9 +108,32 @@ print("September Total: ", sepTotal)
 print("October Total: ", octTotal)
 print("November Total: ", novTotal)
 print("December Total: ", decTotal)
+print("")
+print("Total Requests")
+print("-------------------------")
+print("")
 print("Total Requests: ", totalRequests)
+print("")
+print("Error Messages")
+print("-------------------------")
+print("")
 print("Percentage of the requests were not successful: ", (len(errorfourtotal)/totalRequests)*100 , "%")
 print("Percentage of the requests were redirected elsewhere: ", (len(errorthreetotal)/totalRequests)*100 , "%")
-
+print("")
+print("File Frequency")
+print("-------------------------")
+print("")
+fileNames.sort()
+for p in fileNames: 
+  print (p)
+  
+  
+#lst = list()
+#for key, val in fileNames.items():
+#    lst.append( (val, key) )
+#lst.sort(reverse=True)
+#for key, val in lst[:10] :
+#
+fileNames.sort()
 for p in fileNames: 
   print (p)
