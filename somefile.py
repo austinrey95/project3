@@ -1,7 +1,6 @@
 FILE_NAME = 'http_access_log.txt'
 fh = open(FILE_NAME)
 import re
-import collections
 
 print("Calculating.....")
 #counter vars
@@ -21,7 +20,7 @@ decTotal = 0
 errorthreetotal = []
 errorfourtotal = []
 ERRORS = []
-fileNames = []
+fileNames = {}
 
 #expressions
 janregex = r".* - - ([[]\d+.[J]+[a]+\S+)"
@@ -47,16 +46,13 @@ for line in fh:
   parts = regex.split(line)
   if not parts or len(parts) < 7:
     ERRORS.append(line)  
-  else:
-    file = re.search(regex, line)
-    match = file.group(4)
-    fileNames.append(match)
- # if line not in fileNames:
-   # fileNames[0] == 1
+ 
+  #pieces = re.search(".*\[([^:]*):(.*) \-[0-9]{4}\] \"([A-Z]+) (.+?)( HTTP.*\"|\") ([2-5]0[0-9]) .*", line)
+  #filename = pieces.group(4)
+  #if filename in fileNames:
+  #  fileNames[filename] += 1
   #else:
-  #  fileNames[0] += 1    
-    
-    
+  #  fileNames[filename] = 1
   totalRequests+=1
 
   
@@ -69,28 +65,52 @@ for line in fh:
   #months
   if re.search(janregex, line):
     janTotal+=1
+    with open('january.txt', 'a') as the_file:
+        the_file.write(line)    
   elif re.search(febregex, line):
     febTotal+=1
+    with open('febuary.txt', 'a') as the_file:
+        the_file.write(line)        
   elif re.search(marchregex, line):
     marchTotal+=1
+    with open('march.txt', 'a') as the_file:
+        the_file.write(line)        
   elif re.search(aprilregex, line):
     aprilTotal+=1
+    with open('april.txt', 'a') as the_file:
+        the_file.write(line)        
   elif re.search(mayregex, line):
     mayTotal+=1
+    with open('may.txt', 'a') as the_file:
+        the_file.write(line)        
   elif re.search(juneregex, line):
     juneTotal+=1
+    with open('june.txt', 'a') as the_file:
+        the_file.write(line)        
   elif re.search(julyregex, line):
     julyTotal+=1
+    with open('july.txt', 'a') as the_file:
+        the_file.write(line)        
   elif re.search(augregex, line):
     augTotal+=1
+    with open('august.txt', 'a') as the_file:
+        the_file.write(line)        
   elif re.search(sepregex, line):
     sepTotal+=1
+    with open('september.txt', 'a') as the_file:
+        the_file.write(line)        
   elif re.search(octoregex, line):
     octTotal+=1
+    with open('october.txt', 'a') as the_file:
+        the_file.write(line)        
   elif re.search(novregex, line):
     novTotal+=1
+    with open('november.txt', 'a') as the_file:
+        the_file.write(line)        
   elif re.search(decregex, line):
     decTotal+=1
+    with open('december.txt', 'a') as the_file:
+        the_file.write(line)        
 
 #print statements
 print("Monthly Totals")
@@ -123,17 +143,7 @@ print("")
 print("File Frequency")
 print("-------------------------")
 print("")
-fileNames.sort()
-for p in fileNames: 
-  print (p)
-  
-  
-#lst = list()
-#for key, val in fileNames.items():
-#    lst.append( (val, key) )
-#lst.sort(reverse=True)
-#for key, val in lst[:10] :
-#
-fileNames.sort()
-for p in fileNames: 
-  print (p)
+
+for p in fileNames:
+  print (p, fileNames[p])
+
