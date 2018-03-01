@@ -1,6 +1,8 @@
+import re
+from urllib.request import urlretrieve
+
 FILE_NAME = 'http_access_log.txt'
 fh = open(FILE_NAME)
-import re
 
 print("Calculating.....")
 #counter vars
@@ -44,8 +46,9 @@ regex = re.compile(".*\[([^:]*):(.*) \-[0-9]{4}\] \"([A-Z]+) (.+?)( HTTP.*\"|\")
 #loops
 for line in fh:
   parts = regex.split(line)
-  if not parts or len(parts) < 7:
-    ERRORS.append(line)  
+  if not parts or len(parts) < 7: 
+    with open('error.txt', 'a') as the_file:
+        the_file.write(line)    
  
   #pieces = re.search(".*\[([^:]*):(.*) \-[0-9]{4}\] \"([A-Z]+) (.+?)( HTTP.*\"|\") ([2-5]0[0-9]) .*", line)
   #filename = pieces.group(4)
@@ -143,7 +146,3 @@ print("")
 print("File Frequency")
 print("-------------------------")
 print("")
-
-for p in fileNames:
-  print (p, fileNames[p])
-
