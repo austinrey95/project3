@@ -1,10 +1,11 @@
 import re
-from urllib.request import urlretrieve
+import operator
 
 FILE_NAME = 'http_access_log.txt'
 fh = open(FILE_NAME)
 
 print("Calculating.....")
+
 #counter vars
 totalRequests = 0
 janTotal = 0
@@ -23,6 +24,7 @@ errorthreetotal = []
 errorfourtotal = []
 ERRORS = []
 fileNames = {}
+searchList = []
 
 #expressions
 janregex = r".* - - ([[]\d+.[J]+[a]+\S+)"
@@ -43,29 +45,28 @@ errorfour = r".* - - .*[G]+[E]+[T] +\S+ +\S+ (4)"
 fileregex = r".* - - .*[G]+[E]+[T] (\S+)"
 regex = re.compile(".*\[([^:]*):(.*) \-[0-9]{4}\] \"([A-Z]+) (.+?)( HTTP.*\"|\") ([2-5]0[0-9]) .*")
 
-#loops
 for line in fh:
+  #NUMBER 1
+  totalRequests+=1
+  
+  #WRITES INCORRECT LINES TO ERROR.TXT 
+  #NUMBER 5 AND 6
   parts = regex.split(line)
   if not parts or len(parts) < 7: 
     with open('error.txt', 'a') as the_file:
-        the_file.write(line)    
- 
-  #pieces = re.search(".*\[([^:]*):(.*) \-[0-9]{4}\] \"([A-Z]+) (.+?)( HTTP.*\"|\") ([2-5]0[0-9]) .*", line)
-  #filename = pieces.group(4)
-  #if filename in fileNames:
-  #  fileNames[filename] += 1
-  #else:
-  #  fileNames[filename] = 1
-  totalRequests+=1
-
-  
-  #errors
-  if re.search(errorthree, line):
-    errorthreetotal.append(line) 
-  if re.search(errorfour, line):
-    errorfourtotal.append(line) 
-    
-  #months
+        the_file.write(line)        
+  else:
+    fileparts = re.split(".*\[([^:]*):(.*) \-[0-9]{4}\] \"([A-Z]+) (.+?)( HTTP.*\"|\") ([2-5]0[0-9]) .*", line)
+    file = fileparts[4]
+    if file not in searchList and file not in fileNames:
+      searchList.append(file)
+    elif file in searchList and file not in fileNames:
+      fileNames[file] = 2
+      searchList.remove(file)
+    elif file not in searchList and file in fileNames:
+      fileNames[file] += 1
+      
+  #NUMBER 2 MONTHLY CALCULATIONS
   if re.search(janregex, line):
     janTotal+=1
     with open('january.txt', 'a') as the_file:
@@ -101,19 +102,14 @@ for line in fh:
   elif re.search(sepregex, line):
     sepTotal+=1
     with open('september.txt', 'a') as the_file:
-        the_file.write(line)        
-  elif re.search(octoregex, line):
-    octTotal+=1
-    with open('october.txt', 'a') as the_file:
-        the_file.write(line)        
-  elif re.search(novregex, line):
-    novTotal+=1
-    with open('november.txt', 'a') as the_file:
-        the_file.write(line)        
-  elif re.search(decregex, line):
-    decTotal+=1
-    with open('december.txt', 'a') as the_file:
-        the_file.write(line)        
+        the_file.write(line)       
+  
+  #NUMBER 3 AND 4
+  if re.search(errorthree, line):
+    errorthreetotal.append(line) 
+  if re.search(errorfour, line):
+    errorfourtotal.append(line) 
+    
 
 #print statements
 print("Monthly Totals")
@@ -146,3 +142,7 @@ print("")
 print("File Frequency")
 print("-------------------------")
 print("")
+
+maximum = max(fileNames.items(), key=operator.itemgetter(1))[0]
+print ("Max file requested is", maximum, "which was requested", fileNames[maximum])
+print ("Min files with one request", len(searchList), "and some examples include", searchList[1], searchList[5], searchList[10], searchList[20])
