@@ -103,7 +103,18 @@ for line in fh:
     sepTotal+=1
     with open('september.txt', 'a') as the_file:
         the_file.write(line)       
-  
+  elif re.search(octoregex, line):
+    octTotal+=1
+    with open('october.txt', 'a') as the_file:
+        the_file.write(line)   
+  elif re.search(novregex, line):
+    novTotal+=1
+    with open('november.txt', 'a') as the_file:
+        the_file.write(line)     
+  elif re.search(decregex, line):
+    decTotal+=1
+    with open('december.txt', 'a') as the_file:
+        the_file.write(line)             
   #NUMBER 3 AND 4
   if re.search(errorthree, line):
     errorthreetotal.append(line) 
@@ -136,8 +147,10 @@ print("")
 print("Error Messages")
 print("-------------------------")
 print("")
-print("Percentage of the requests were not successful: ", (len(errorfourtotal)/totalRequests)*100 , "%")
-print("Percentage of the requests were redirected elsewhere: ", (len(errorthreetotal)/totalRequests)*100 , "%")
+print("Total errors 3xx", len(errorthreetotal))
+print("Total errors 4xx", len(errorfourtotal))
+print("Percentage of the requests were not successful: ", ((len(errorfourtotal)/totalRequests)*100) , "%")
+print("Percentage of the requests were redirected elsewhere: ", ((len(errorthreetotal)/totalRequests)*100) , "%")
 print("")
 print("File Frequency")
 print("-------------------------")
