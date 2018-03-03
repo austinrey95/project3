@@ -1,14 +1,17 @@
 import re
 import operator
+
 from datetime import datetime
 import os.path
 from urllib.request import urlretrieve
+
 
 URL_PATH = 'https://s3.amazonaws.com/tcmg476/http_access_log'
 LOCAL_FILE = 'local_copy.log'
 if not os.path.isfile(LOCAL_FILE):
   local_file, headers = urlretrieve(URL_PATH, LOCAL_FILE, lambda x,y,z: print('.', end='', flush=True) if x % 100 == 0 else False)
 fh = open(LOCAL_FILE)
+
 
 #counter vars
 
@@ -18,6 +21,24 @@ partList = []
 errorCodes = []
 errorLines = []
 totalRequests = 0
+janTotal = 0
+febTotal = 0
+marchTotal = 0
+aprilTotal = 0
+mayTotal = 0
+juneTotal = 0
+julyTotal = 0
+augTotal = 0
+sepTotal = 0
+octTotal = 0
+novTotal = 0
+decTotal = 0
+errorthreetotal = []
+errorfourtotal = []
+ERRORS = []
+fileNames = {}
+searchList = []
+
 
 #expressions
 #janregex = r".* - - ([[]\d+.[J]+[a]+\S+)"
@@ -61,3 +82,24 @@ def main():
   print (errorCodes)
   print ("Total 3xx errors is", errorthreetotal, "which is", (errorthreetotal/totalRequests)*100, "percentage of the total requests")
   print ("Total 4xx errors is", errorfourtotal, "which is", (errorfourtotal/totalRequests)*100, "percentage of the total requests")
+
+for line in fh:
+  #NUMBER 1
+  totalRequests+=1
+  
+  #WRITES INCORRECT LINES TO ERROR.TXT 
+  #NUMBER 5 AND 6
+  parts = regex.split(line)
+  if not parts or len(parts) < 7: 
+    with open('error.txt', 'a') as the_file:
+        the_file.write(line)        
+  else:
+    fileparts = re.split(".*\[([^:]*):(.*) \-[0-9]{4}\] \"([A-Z]+) (.+?)( HTTP.*\"|\") ([2-5]0[0-9]) .*", line)
+    file = fileparts[4]
+    if file not in searchList and file not in fileNames:
+      searchList.append(file)
+    elif file in searchList and file not in fileNames:
+      fileNames[file] = 2
+      searchList.remove(file)
+    elif file not in searchList and file in fileNames:
+      fileNames[file] += 1
