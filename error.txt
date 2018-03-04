@@ -1,3 +1,0 @@
-local 780     index.html
-local      index.html
-local      index.html
