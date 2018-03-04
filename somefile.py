@@ -11,9 +11,7 @@ if not os.path.isfile(LOCAL_FILE):
   local_file, headers = urlretrieve(URL_PATH, LOCAL_FILE, lambda x,y,z: print('.', end='', flush=True) if x % 100 == 0 else False)
 fh = open(LOCAL_FILE)
 
-
 #counter vars
-
 errorthreetotal = 0
 errorfourtotal = 0
 partList = []
@@ -26,22 +24,6 @@ fileName = ''
 
 
 #expressions
-#janregex = r".* - - ([[]\d+.[J]+[a]+\S+)"
-#febregex = r".* - - ([[]\d+.[F]+[e]+\S+)"
-#marchregex = r".* - - ([[]\d+.[M]+[a]+[r]+\S+)"
-#aprilregex = r".* - - ([[]\d+.[A]+[p]+\S+)"
-#mayregex = r".* - - ([[]\d+.[M]+[a]+[y]+\S+)"
-#juneregex = r".* - - ([[]\d+.[J]+[u]+[n]+\S+)"
-#julyregex = r".* - - ([[]\d+.[J]+[u]+[l]+\S+)"
-#augregex = r".* - - ([[]\d+.[A]+[u]+\S+)"
-#sepregex = r".* - - ([[]\d+.[S]+[e]+\S+)"
-#octoregex = r".* - - ([[]\d+.[O]+\S+)"
-#novregex = r".* - - ([[]\d+.[N]+[o]+\S+)"
-#decregex = r".* - - ([[]\d+.[D]+[e]+\S+)"
-#nameregex = r".* - - .*[G]+[E]+[T] (\S+)"
-#errorthree = r".* - - .*[G]+[E]+[T] +\S+ +\S+ (3)"
-#errorfour = r".* - - .*[G]+[E]+[T] +\S+ +\S+ (4)"
-#fileregex = r".* - - .*[G]+[E]+[T] (\S+)"
 regex = re.compile(".*\[([^:]*):(.*) \-[0-9]{4}\] \"([A-Z]+) (.+?)( HTTP.*\"|\") ([2-5]0[0-9]) .*")
 
   #REQS = {1:0, 2:0............/}
