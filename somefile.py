@@ -1,10 +1,9 @@
 import re
 import operator
-
 from datetime import datetime
 import os.path
 from urllib.request import urlretrieve
-
+from collections import defaultdict
 
 URL_PATH = 'https://s3.amazonaws.com/tcmg476/http_access_log'
 LOCAL_FILE = 'local_copy.log'
@@ -18,26 +17,12 @@ fh = open(LOCAL_FILE)
 errorthreetotal = 0
 errorfourtotal = 0
 partList = []
-errorCodes = []
 errorLines = []
 totalRequests = 0
-janTotal = 0
-febTotal = 0
-marchTotal = 0
-aprilTotal = 0
-mayTotal = 0
-juneTotal = 0
-julyTotal = 0
-augTotal = 0
-sepTotal = 0
-octTotal = 0
-novTotal = 0
-decTotal = 0
-errorthreetotal = []
-errorfourtotal = []
 ERRORS = []
-fileNames = {}
-searchList = []
+fileList = []
+fileDict = {}
+fileName = ''
 
 
 #expressions
@@ -68,38 +53,32 @@ def main():
   global totalRequests
   global errorthreetotal
   global errorfourtotal
+  global fileName
+  
   for line in fh:
     totalRequests+=1
     parts = regex.split(line)
-    partList.append(parts)
-    if len(parts) < 6:
+    if not parts or len(parts) < 7: 
       errorLines.append(line)
-    elif parts[6].startswith('3'):
-      errorthreetotal += 1
-    elif parts[6].startswith('4'):
-      errorfourtotal += 1  
+    else:
+      fileName = parts[4] 
+      if parts[6].startswith('3'):
+        errorthreetotal += 1
+      elif parts[6].startswith('4'):
+        errorfourtotal += 1  
+      if fileName not in fileList and fileName not in fileDict:
+        fileList.append(fileName)
+      elif fileName in fileList and fileName not in fileDict:
+        fileDict[fileName] = 1
+        fileList.remove(fileName)
+      elif fileName not in fileList and fileName in fileDict:
+        fileDict[fileName] += 1
+      
   print ("Total Requests: ", totalRequests)
-  print (errorCodes)
+  print ("Total errors in log:", len(errorLines), "which is", (len(errorLines)/totalRequests)*100, "percentage of all requests")
   print ("Total 3xx errors is", errorthreetotal, "which is", (errorthreetotal/totalRequests)*100, "percentage of the total requests")
   print ("Total 4xx errors is", errorfourtotal, "which is", (errorfourtotal/totalRequests)*100, "percentage of the total requests")
-
-for line in fh:
-  #NUMBER 1
-  totalRequests+=1
+  maximum = max(fileDict.items(), key=operator.itemgetter(1))[0]
+  print ("Max file requested is", maximum, "which was requested", fileDict[maximum])
+  print ("Min files with one request", len(fileList), "and some examples include", fileList[1], fileList[5], fileList[10], fileList[20])
   
-  #WRITES INCORRECT LINES TO ERROR.TXT 
-  #NUMBER 5 AND 6
-  parts = regex.split(line)
-  if not parts or len(parts) < 7: 
-    with open('error.txt', 'a') as the_file:
-        the_file.write(line)        
-  else:
-    fileparts = re.split(".*\[([^:]*):(.*) \-[0-9]{4}\] \"([A-Z]+) (.+?)( HTTP.*\"|\") ([2-5]0[0-9]) .*", line)
-    file = fileparts[4]
-    if file not in searchList and file not in fileNames:
-      searchList.append(file)
-    elif file in searchList and file not in fileNames:
-      fileNames[file] = 2
-      searchList.remove(file)
-    elif file not in searchList and file in fileNames:
-      fileNames[file] += 1
